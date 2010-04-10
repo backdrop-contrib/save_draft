@@ -14,13 +14,28 @@ function save_draft_form_alter(&$form, &$form_state, $form_id) {
   $form_id = strstr($form_id, '_');
   $form_id = substr($form_id, 1);
   if ($form_id == 'node_form') {
-    $form['buttons']['draft'] = array(
-      '#type' => 'submit',
-      '#class' => 'form-submit',
-      '#value' => t('Save as Draft'),
-      '#weight' => '9',
-      '#submit' => array('save_draft_submit')
-    );
+    if (isset($form['nid']['#value'])) {
+      $form['buttons']['draft'] = array(
+        '#type' => 'submit',
+        '#class' => 'form-submit',
+        '#value' => t('Save as unpublish'),
+        '#weight' => '9',
+        '#submit' => array('save_draft_submit')
+      );
+      $form['buttons']['submit']['#value'] = t('Save Changes');
+      $form['buttons']['submit']['#submit'] = array('publish_submit');
+    }
+    else {
+      $form['buttons']['draft'] = array(
+        '#type' => 'submit',
+        '#class' => 'form-submit',
+        '#value' => t('Save as Draft'),
+        '#weight' => '9',
+        '#submit' => array('save_draft_submit')
+      );
+      $form['buttons']['submit']['#value'] = t('Publish');
+      $form['buttons']['submit']['#submit'] = array('publish_submit');
+    }
   }
 }
 
@@ -29,5 +44,13 @@ function save_draft_form_alter(&$form, &$form_state, $form_id) {
  */
 function save_draft_submit($form, &$form_state) {
   $form_state['values']['status'] = 0;
+  node_form_submit($form, $form_state);
+}
+
+/**
+ * Handles publish form submission
+ */
+function publish_submit($form, &$form_state) {
+  $form_state['values']['status'] = 1;
   node_form_submit($form, $form_state);
 }
