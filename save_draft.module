@@ -11,8 +11,7 @@
  */
  
 function save_draft_form_alter(&$form, &$form_state, $form_id) {
-  $form_id = strstr($form_id, '_');
-  $form_id = substr($form_id, 1);
+  $form_id = substr($form_id, -9);
   if ($form_id == 'node_form') {
     if (isset($form['nid']['#value'])) {
       $form['buttons']['draft'] = array(
