@@ -5,6 +5,14 @@
  * @file
  * Main file for the Save Draft module, which adds a 'Save as Draft' button to content types.
  */
+ 
+ /**
+  * Implements hook_perm().
+  */
+ 
+ function save_draft_perm() {
+   return array('save draft');
+ }
 
 /**
  * Implements hook_form_alter().
@@ -12,28 +20,42 @@
  
 function save_draft_form_alter(&$form, &$form_state, $form_id) {
   $form_id = substr($form_id, -9);
-  if ($form_id == 'node_form') {
+  if ($form_id == 'node_form' && user_access('save draft')) {
+    $form['options']['status'] = false;
     if (isset($form['nid']['#value'])) {
-      $form['buttons']['draft'] = array(
-        '#type' => 'submit',
-        '#class' => 'form-submit',
-        '#value' => t('Save as unpublish'),
-        '#weight' => '9',
-        '#submit' => array('save_draft_submit')
-      );
-      $form['buttons']['submit']['#value'] = t('Save Changes');
-      $form['buttons']['submit']['#submit'] = array('publish_submit');
+      if ($form['#node']->status == 1) {
+        $form['actions']['draft'] = array(
+          '#type' => 'submit',
+          '#class' => 'form-submit',
+          '#value' => t('Unpublish'),
+          '#weight' => '9',
+          '#submit' => array('save_draft_submit')
+        );
+        $form['actions']['submit']['#value'] = t('Save');
+        $form['actions']['submit']['#submit'] = array('publish_submit');
+      }
+      else {
+        $form['actions']['draft'] = array(
+          '#type' => 'submit',
+          '#class' => 'form-submit',
+          '#value' => t('Save'),
+          '#weight' => '0',
+          '#submit' => array('save_draft_submit')
+        );
+        $form['actions']['submit']['#value'] = t('Publish');
+        $form['actions']['submit']['#submit'] = array('publish_submit');
+      }
     }
     else {
-      $form['buttons']['draft'] = array(
+      $form['actions']['draft'] = array(
         '#type' => 'submit',
         '#class' => 'form-submit',
         '#value' => t('Save as Draft'),
         '#weight' => '9',
         '#submit' => array('save_draft_submit')
       );
-      $form['buttons']['submit']['#value'] = t('Publish');
-      $form['buttons']['submit']['#submit'] = array('publish_submit');
+      $form['actions']['submit']['#value'] = t('Publish');
+      $form['actions']['submit']['#submit'] = array('publish_submit');
     }
   }
 }
