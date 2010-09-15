@@ -21,6 +21,7 @@
 function save_draft_form_alter(&$form, &$form_state, $form_id) {
   $form_id = substr($form_id, -9);
   if ($form_id == 'node_form' && user_access('save draft')) {
+    $form['options']['#title'] = t('Content promotion options');
     $form['options']['status'] = false;
     if (isset($form['nid']['#value'])) {
       if ($form['#node']->status == 1) {
