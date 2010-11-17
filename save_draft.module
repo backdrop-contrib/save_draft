@@ -30,10 +30,11 @@ function save_draft_form_alter(&$form, &$form_state, $form_id) {
           '#class' => 'form-submit',
           '#value' => t('Unpublish'),
           '#weight' => '9',
+          '#validate' => array('save_draft_validate'),
           '#submit' => array('save_draft_submit')
         );
         $form['actions']['submit']['#value'] = t('Save');
-        $form['actions']['submit']['#submit'][] = 'publish_submit';
+        $form['actions']['submit']['#validate'][] = 'save_draft_publish_validate';
       }
       else {
         $form['actions']['draft'] = array(
@@ -41,10 +42,11 @@ function save_draft_form_alter(&$form, &$form_state, $form_id) {
           '#class' => 'form-submit',
           '#value' => t('Save'),
           '#weight' => '0',
+          '#validate' => array('save_draft_validate'),
           '#submit' => array('save_draft_submit')
         );
         $form['actions']['submit']['#value'] = t('Publish');
-        $form['actions']['submit']['#submit'][] = 'publish_submit';
+        $form['actions']['submit']['#validate'][] = 'save_draft_publish_validate';
       }
     }
     else {
@@ -53,26 +55,32 @@ function save_draft_form_alter(&$form, &$form_state, $form_id) {
         '#class' => 'form-submit',
         '#value' => t('Save as Draft'),
         '#weight' => '9',
+        '#validate' => array('save_draft_validate'),
         '#submit' => array('save_draft_submit')
       );
       $form['actions']['submit']['#value'] = t('Publish');
-      $form['actions']['submit']['#submit'][] = 'publish_submit';
+      $form['actions']['submit']['#validate'][] = 'save_draft_publish_validate';
     }
   }
+}
+
+/**
+ * Handles save draft form validation
+ */
+function save_draft_validate($form, &$form_state) {
+  $form_state['values']['status'] = 0;
 }
 
 /**
  * Handles save draft form submission
  */
 function save_draft_submit($form, &$form_state) {
-  $form_state['values']['status'] = 0;
   node_form_submit($form, $form_state);
 }
 
 /**
- * Handles publish form submission
+ * Handles publish form validation
  */
-function publish_submit($form, &$form_state) {
+function save_draft_publish_validate($form, &$form_state) {
   $form_state['values']['status'] = 1;
-  node_form_submit($form, $form_state);
 }
