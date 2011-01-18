@@ -10,9 +10,14 @@
   * Implements hook_perm().
   */
  
- function save_draft_perm() {
-   return array('save draft');
- }
+function save_draft_permission() {
+  return array(
+    'administersavedraft' => array(
+      'title' => t('Administer save draft'), 
+      'description' => t('Allows a user to save draft using save draft button'),
+    ),
+  );
+}
 
 /**
  * Implements hook_form_alter().
@@ -20,7 +25,7 @@
  
 function save_draft_form_alter(&$form, &$form_state, $form_id) {
   $form_id = substr($form_id, -9);
-  if ($form_id == 'node_form' && user_access('save draft')) {
+  if ($form_id == 'node_form' && user_access('administersavedraft')) {
     $form['options']['#title'] = t('Content promotion options');
     $form['options']['status'] = false;
     if (isset($form['nid']['#value'])) {
