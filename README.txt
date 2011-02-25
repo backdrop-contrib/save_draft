@@ -1,4 +1,3 @@
-// $Id$
 
 Save_draft adds a 'Save as Draft' Button to the node_form for content types, 
 allowing the user to click the 'Save as Draft' button to save the node as a 
