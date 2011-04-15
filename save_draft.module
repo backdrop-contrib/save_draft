@@ -2,30 +2,22 @@
 
 /**
  * @file
- * Main file for the Save Draft module, which adds a 'Save as Draft' button to content types.
+ * Main file for the Save Draft module, which adds a 'Save as draft' button to content types.
  */
- 
- /**
-  * Implements hook_perm().
-  */
- 
-function save_draft_permission() {
-  return array(
-    'administersavedraft' => array(
-      'title' => t('Administer save draft'), 
-      'description' => t('Allows a user to save draft using save draft button'),
-    ),
-  );
-}
 
 /**
- * Implements hook_form_alter().
+ * Implements hook_form_FORM_ID_alter().
  */
- 
-function save_draft_form_alter(&$form, &$form_state, $form_id) {
-  $form_id = substr($form_id, -9);
-  if ($form_id == 'node_form' && user_access('administersavedraft')) {
-    $form['options']['#title'] = t('Content promotion options');
+function save_draft_form_node_form_alter(&$form, &$form_state) {
+  // Only alter the form if the status checkbox is present.
+  if (isset($form['options']['status']) && (!isset($form['options']['status']['#access']) || $form['options']['status']['#access'])) {
+    $form['options']['#title'] = t('Promotion settings');
+    $form['options']['#attributes']['class'] = array('node-promotion-options');
+    $form['options']['#attached'] = array(
+      'js' => array(
+        'vertical-tabs' => drupal_get_path('module', 'save_draft') . '/save_draft.js',
+      ),
+    );
     $form['options']['status'] = false;
     if (isset($form['nid']['#value'])) {
       if ($form['#node']->status == 1) {
@@ -57,7 +49,7 @@ function save_draft_form_alter(&$form, &$form_state, $form_id) {
       $form['actions']['draft'] = array(
         '#type' => 'submit',
         '#class' => 'form-submit',
-        '#value' => t('Save as Draft'),
+        '#value' => t('Save as draft'),
         '#weight' => '9',
         '#validate' => array('save_draft_validate'),
         '#submit' => array('save_draft_submit')
