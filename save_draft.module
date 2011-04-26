@@ -6,11 +6,22 @@
  */
 
 /**
+ * Implements hook_permission().
+ */
+function save_draft_permission() {
+  return array(
+    'save draft' => array(
+      'title' => t('Save content as draft'),
+      'description' => t('Allows a user to save a draft of their content.'),
+    ),
+  );
+}
+
+/**
  * Implements hook_form_FORM_ID_alter().
  */
 function save_draft_form_node_form_alter(&$form, &$form_state) {
-  // Only alter the form if the status checkbox is present.
-  if (isset($form['options']['status']) && (!isset($form['options']['status']['#access']) || $form['options']['status']['#access'])) {
+  if (user_access('save draft')) {
     $form['options']['#title'] = t('Promotion settings');
     $form['options']['#attributes']['class'] = array('node-promotion-options');
     $form['options']['#attached'] = array(
