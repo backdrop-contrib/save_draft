@@ -14,7 +14,7 @@ class SaveDraftTestCase extends DrupalWebTestCase {
 
   public function setUp() {
     parent::setUp(array('save_draft'));
-    $this->admin = $this->drupalCreateUser(array('create article content', 'edit any article content', 'save draft'));
+    $this->admin = $this->drupalCreateUser(array('create article content', 'edit any article content', 'view own unpublished content', 'save draft'));
     $this->drupalLogin($this->admin);
     $langcode = LANGUAGE_NONE;
     $this->title_key = "title";
