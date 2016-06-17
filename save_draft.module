@@ -42,7 +42,6 @@ function save_draft_form_node_form_alter(&$form, &$form_state) {
     // fieldset accordingly.
     if (isset($form['options']['status'])) {
       $form['options']['status']['#access'] = FALSE;
-      $form['options']['#title'] = t('Promotion settings');
       $form['options']['#attributes']['class'] = array('node-promotion-options');
       $form['options']['#attached'] = array(
         'js' => array(
