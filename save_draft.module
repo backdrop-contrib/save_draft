@@ -133,15 +133,23 @@ function save_draft_validate($form, &$form_state) {
  * Implements hook_form_FORM_ID_alter() for the node type form.
  */
 function save_draft_form_node_type_form_alter(&$form, &$form_state) {
-  $enabled = config_get('save_draft.settings','enabled_' . $form['#node_type']->type);
+  $config = config('save_draft.settings');
+  $enabled = $config->get('enabled_' . $form['#node_type']->type);
+  $skip_required = $config->get('skip_required_' . $form['#node_type']->type);
 
-  $form['save_draft'] = array(
-    '#type' => 'fieldset',
-    '#title' => t('Enable "Save draft" button'),
-    '#weight' => 1,
-    '#collapsible' => TRUE,
-    '#collapsed' => !$enabled,
-    '#group' => 'additional_settings',
+  $options = array(
+    'enabled' => t('Enable "Save Draft" button on this content type'),
+    'skip_required' => t('Allow drafts to skip required fields'),
+  );
+
+  $form['workflow']['save_draft'] = array(
+    '#title' => t('Save Draft'),
+    '#type' => 'checkboxes',
+    '#options' => $options,
+    '#default_value' => array (
+      'enabled' => $enabled,
+      'skip_required' => $skip_required,
+    ),
     '#attached' => array(
       'js' => array(
         'save-draft' => backdrop_get_path('module', 'save_draft') . '/js/save_draft.js',
@@ -149,19 +157,17 @@ function save_draft_form_node_type_form_alter(&$form, &$form_state) {
     ),
   );
 
-  $form['save_draft']['enabled'] = array(
-    '#title' => t('Enabled'),
-    '#type' => 'checkbox',
-    '#description' => t('Enable save as draft functionality for this content type.'),
-    '#default_value' => $enabled,
-  );
+  $form['#submit'][] = 'save_draft_form_node_type_form_submit';
+}
 
-  $form['save_draft']['skip_required'] = array(
-    '#title' => t('Skip required validation'),
-    '#type' => 'checkbox',
-    '#description' => t('Allow users to save a draft without having entered a value for required fields. If unchecked, all required fields must be filled before a draft can be saved.'),
-    '#default_value' => config_get('save_draft.settings','skip_required_' . $form['#node_type']->type),
-  );
+/**
+   * Submit handler for the new "Save Draft" options on the Content Type edit form.
+   */
+function save_draft_form_node_type_form_submit($form, &$form_state) {
+  $config = config('save_draft.settings');
+  if (isset($form_state['values']['save_draft']['enabled'])) $config->set('enabled_'.$form_state['values']['type'],$form_state['values']['save_draft']['enabled']);
+  if (isset($form_state['values']['save_draft']['skip_required'])) $config->set('skip_required_'.$form_state['values']['type'],$form_state['values']['save_draft']['skip_required']);
+  $config->save();
 }
 
 /**
