@@ -3,36 +3,36 @@
 /**
  * Show summaries of selected options within tabs.
  */
-Drupal.behaviors.saveDraftFieldsetSummaries = {
+Backdrop.behaviors.saveDraftFieldsetSummaries = {
   attach: function (context) {
     // Remove publication status from the "Content promotion options" vertical
     // tab.
-    $('fieldset.node-promotion-options', context).drupalSetSummary(function (context) {
+    $('fieldset.node-promotion-options', context).BackdropSetSummary(function (context) {
       var vals = [];
 
       $('input:checked', context).parent().each(function () {
-        vals.push(Drupal.checkPlain($.trim($(this).text())));
+        vals.push(Backdrop.checkPlain($.trim($(this).text())));
       });
       if (vals.length) {
         return vals.join(', ');
       }
       else {
-        return Drupal.t('Not promoted');
+        return Backdrop.t('Not promoted');
       }
     });
 
     // Display save draft settings summary on the node options fieldet.
-    $('fieldset#edit-save-draft', context).drupalSetSummary(function (context) {
+    $('fieldset#edit-save-draft', context).BackdropSetSummary(function (context) {
       var vals = [];
 
       // Add summary text for each checked option.
       $('input:checked', context).next('label').each(function() {
-        vals.push(Drupal.checkPlain($(this).text()));
+        vals.push(Backdrop.checkPlain($(this).text()));
       });
 
       // For the case of the "Enabled" checkbox also handle the disabled state.
       if (!$('#edit-save-draft-enabled', context).is(':checked')) {
-        vals.unshift(Drupal.t('Disabled'));
+        vals.unshift(Backdrop.t('Disabled'));
       }
       return vals.join(', ');
     });
