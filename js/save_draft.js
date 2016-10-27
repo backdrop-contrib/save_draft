@@ -7,7 +7,7 @@ Backdrop.behaviors.saveDraftFieldsetSummaries = {
   attach: function (context) {
     // Remove publication status from the "Content promotion options" vertical
     // tab.
-    $('fieldset.node-promotion-options', context).BackdropSetSummary(function (context) {
+    $('fieldset.node-promotion-options', context).backdropSetSummary(function (context) {
       var vals = [];
 
       $('input:checked', context).parent().each(function () {
@@ -22,7 +22,7 @@ Backdrop.behaviors.saveDraftFieldsetSummaries = {
     });
 
     // Display save draft settings summary on the node options fieldet.
-    $('fieldset#edit-save-draft', context).BackdropSetSummary(function (context) {
+    $('fieldset#edit-save-draft', context).backdropSetSummary(function (context) {
       var vals = [];
 
       // Add summary text for each checked option.

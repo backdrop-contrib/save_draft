@@ -55,5 +55,5 @@ Bugs and Feature requests should be reported in the
 
 ##License
 
-This project is GPL v2 software. See the [LICENSE.txt](https://github.com/backdrop-contrib/image_effects/blob/1.x-1.x/LICENSE.txt) 
+This project is GPL v2 software. See the [LICENSE.txt](https://github.com/backdrop-contrib/save_draft/blob/1.x-1.x/LICENSE.txt) 
 file in this directory for complete text.
