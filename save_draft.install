@@ -6,21 +6,42 @@
  */
 
 /**
- * Implements hook_uninstall().
+ * Implements hook_install().
+ *
+ * Enable Save draft by default on each content type.
  */
-function save_draft_uninstall() {
-  foreach (node_type_get_names('names') as $type => $type_name) {
-    //TODO: See if this necessary
-    //variable_del('save_draft_enabled_' . $type);
-    //variable_del('save_draft_skip_required_' . $type);
+function save_draft_install() {
+  $settings = array('draft_enabled', 'skip_required');
+  foreach (node_type_get_types() as $type) {
+    config_set('node.type.' . $type->type, 'settings.draft_enabled', 1);
+    config_set('node.type.' . $type->type, 'settings.skip_required', 0);
   }
 }
 
-
-function save_draft_install() {
-  $config = config('save_draft.settings');
+/**
+ * Implements hook_uninstall().
+ */
+function save_draft_uninstall() {
   foreach (node_type_get_types() as $type) {
-    $config->set('enabled_' . $type->type, TRUE);
+    $config = config('node.type.' . $type->type);
+    $config->clear('settings.draft_enabled');
+    $config->clear('settings.skip_required');
+    $config->save();
+  }
+}
+
+/**
+ * Update config so variables are stored in the node type config.
+ */
+function save_draft_update_1000() {
+  $config = config('save_draft.settings');
+  $settings = array('draft_enabled', 'skip_required');
+  foreach (node_type_get_types() as $type) {
+    $setting['draft_enabled'] = $config->get('enabled_' . $type->type);
+    $setting['skip_required'] = $config->get('skip_required_' . $type->type);
+    config_set('node.type.' . $type->type, 'settings.draft_enabled', $setting['draft_enabled']);
+    config_set('node.type.' . $type->type, 'settings.skip_required', $setting['skip_required']);
+    $config->delete('save_draft.settings');
   }
   $config->save();
 }

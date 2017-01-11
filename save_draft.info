@@ -2,5 +2,4 @@ name = Save Draft
 description = Adds a 'Save as Draft' button to content types
 backdrop = 1.x
 type = module
-
-//files[] = save_draft.test
+package = User interface

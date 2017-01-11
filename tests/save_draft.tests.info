@@ -1,0 +1,5 @@
+[SaveDraftTestCase]
+name = Save draft tests
+description = Make sure the node form still works with Save Draft enabled.
+group = Save draft
+file = save_draft.test

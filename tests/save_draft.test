@@ -5,18 +5,10 @@ class SaveDraftTestCase extends BackdropWebTestCase {
   protected $admin_user;
   protected $save_draft_user;
 
-  public static function getInfo() {
-    return array(
-      'name' => 'Save draft',
-      'description' => 'Make sure the node form still works with Save Draft enabled.',
-      'group' => 'Save draft',
-    );
-  }
-
   public function setUp() {
     parent::setUp(array('save_draft'));
     $this->admin_user = $this->BackdropCreateUser(array('administer nodes', 'bypass node access'));
-    $this->save_draft_user = $this->BackdropCreateUser(array('create article content', 'edit any article content', 'view own unpublished content', 'save draft'));
+    $this->save_draft_user = $this->BackdropCreateUser(array('create post content', 'edit any post content', 'view own unpublished content', 'save draft'));
     $langcode = LANGUAGE_NONE;
     $this->title_key = "title";
     $this->body_key = "body[$langcode][0][value]";
@@ -39,23 +31,23 @@ class SaveDraftTestCase extends BackdropWebTestCase {
     // Log in as a user who should see the save draft button.
     $this->BackdropLogin($this->save_draft_user);
 
-    // Make sure save draft is enabled for articles.
-    config_set('save_draft.settings','enabled_article', SAVE_DRAFT_ENABLED);
+    // Make sure save draft is enabled for posts.
+    config_set('node.type.post','settings.draft_enabled', SAVE_DRAFT_ENABLED);
 
     // Make sure the save draft button is present when adding a node and drafts
     // are enabled.
-    $this->BackdropGet('node/add/article');
-    $this->assertRaw('<input type="submit" id="edit-draft" name="op" value="' . t('Save as draft') . '" class="form-submit" />', t('Save draft enabled successfully on node create.'));
+    $this->BackdropGet('node/add/post');
+    $this->assertRaw('<input class="button-secondary form-submit" type="submit" id="edit-draft" name="op" value="' . t('Save as draft') . '" />', t('Save draft enabled successfully on node create.'));
     // Publish a node, and make sure it's published.
     $edit = $this->getNodeArray();
-    $this->BackdropPost('node/add/article', $edit, t('Publish'));
+    $this->BackdropPost('node/add/post', $edit, t('Publish'));
     $node = $this->BackdropGetNodeByTitle($edit[$this->title_key]);
     $this->assertEqual($node->status, NODE_PUBLISHED, t('Node saved correctly.'));
 
     // Make sure the unpublish button is present when on a published node and
     // drafts are enabled.
     $this->BackdropGet('node/' . $node->nid . '/edit');
-    $this->assertRaw('<input type="submit" id="edit-draft" name="op" value="' . t('Unpublish') . '" class="form-submit" />', t('Save draft enabled successfully on published node edit.'));
+    $this->assertRaw('<input class="button-secondary form-submit" type="submit" id="edit-draft" name="op" value="' . t('Unpublish') . '" />', t('Save draft enabled successfully on published node edit.'));
     // Unpublish it, and make sure it's unpublished.
     $this->BackdropPost('node/' . $node->nid . '/edit', array(), t('Unpublish'));
     $node = node_load($node->nid, NULL, TRUE);
@@ -63,34 +55,34 @@ class SaveDraftTestCase extends BackdropWebTestCase {
 
     // Save a new node as a draft, and make sure it's unpublished.
     $edit = $this->getNodeArray();
-    $this->BackdropPost('node/add/article', $edit, t('Save as draft'));
+    $this->BackdropPost('node/add/post', $edit, t('Save as draft'));
     $node = $this->BackdropGetNodeByTitle($edit[$this->title_key]);
     $this->assertEqual($node->status, NODE_NOT_PUBLISHED, t('Node saved correctly as draft.'));
 
     // Make sure the unpublish button is present when on a draft node and
     // drafts are enabled.
     $this->BackdropGet('node/' . $node->nid . '/edit');
-    $this->assertRaw('<input type="submit" id="edit-draft" name="op" value="' . t('Save') . '" class="form-submit" />', t('Save draft enabled successfully on draft node edit.'));
+    $this->assertRaw('<input class="button-primary form-submit" type="submit" id="edit-draft" name="op" value="' . t('Save as draft') . '" />', t('Save draft enabled successfully on draft node edit.'));
     // Publish the node, and make sure it's published.
     $this->BackdropPost('node/' . $node->nid . '/edit', array(), t('Publish'));
     $node = node_load($node->nid, NULL, TRUE);
     $this->assertEqual($node->status, NODE_PUBLISHED, t('Node published correctly.'));
 
-    // Make sure save draft is disabled for articles.
-    config_set('save_draft.settings','enabled_article', SAVE_DRAFT_DISABLED);
+    // Make sure save draft is disabled for posts.
+    config_set('node.type.post','settings.draft_enabled', SAVE_DRAFT_DISABLED);
 
     // Make sure the save draft button is not present when adding a node and
     // drafts are disabled.
-    $this->BackdropGet('node/add/article');
-    $this->assertNoRaw('<input type="submit" id="edit-draft" name="op" value="' . t('Save as draft') . '" class="form-submit" />', t('Save draft disabled successfully on node create.'));
+    $this->BackdropGet('node/add/post');
+    $this->assertNoRaw('<input class="button-secondary form-submit" type="submit" id="edit-draft" name="op" value="' . t('Save as draft') . '" />', t('Save draft disabled successfully on node create.'));
     // Publish a node and edit it again.
     $edit = $this->getNodeArray();
-    $this->BackdropPost('node/add/article', $edit, t('Save'));
+    $this->BackdropPost('node/add/post', $edit, t('Save'));
     $node = $this->BackdropGetNodeByTitle($edit[$this->title_key]);
     // Make sure the unpublish button is present when on a published node and
     // drafts are disabled.
     $this->BackdropGet('node/' . $node->nid . '/edit');
-    $this->assertNoRaw('<input type="submit" id="edit-draft" name="op" value="' . t('Unpublish') . '" class="form-submit" />', t('Save draft disabled successfully on published node edit.'));
+    $this->assertNoRaw('<input class="button-secondary form-submit" type="submit" id="edit-draft" name="op" value="' . t('Unpublish') . '" />', t('Save draft disabled successfully on published node edit.'));
   }
 
   /**
@@ -104,10 +96,10 @@ class SaveDraftTestCase extends BackdropWebTestCase {
     // Test with & without required validation.
     foreach (array(TRUE, FALSE) as $skip_required_validation) {
       debug('Skip required validation: ' . ($skip_required_validation ? 'true' : 'false'));
-      config_set('save_draft.settings','skip_required_article', $skip_required_validation);
+      config_set('node.type.post','settings.skip_required', $skip_required_validation);
 
       // Test clicking all the different buttons on the node add page.
-      foreach (array(t('Publish'), t('Save as draft'), t('Preview')) as $button_value) {
+      foreach (array(t('Publish'), t('Save as draft')) as $button_value) {
         debug('Node add. Button value: ' . $button_value);
         // Try to create a node with a nonexistent author.
         $edit = $this->getNodeArray();
@@ -115,7 +107,7 @@ class SaveDraftTestCase extends BackdropWebTestCase {
         unset($edit[$this->title_key]);
         // This username does not exist.
         $edit['name'] = $this->randomName(8);
-        $this->BackdropPost('node/add/article', $edit, $button_value);
+        $this->BackdropPost('node/add/post', $edit, $button_value);
 
         // Username validation should always fail.
         $this->assertRaw(t('The username %name does not exist.', array('%name' => $edit['name'])));
@@ -133,10 +125,10 @@ class SaveDraftTestCase extends BackdropWebTestCase {
       }
       // Test clicking all the different buttons on the node edit page of a
       // published node.
-      foreach (array(t('Save'), t('Unpublish'), t('Preview'), t('Delete')) as $button_value) {
+      foreach (array(t('Save'), t('Unpublish'), t('Delete')) as $button_value) {
         debug('Published node edit. Button value: ' . $button_value);
         $edit = $this->getNodeArray();
-        $this->BackdropPost('node/add/article', $edit, t('Publish'));
+        $this->BackdropPost('node/add/post', $edit, t('Publish'));
         $node = $this->BackdropGetNodeByTitle($edit[$this->title_key]);
         // Remove the title, which is a required field.
         $edit[$this->title_key] = '';
@@ -159,10 +151,10 @@ class SaveDraftTestCase extends BackdropWebTestCase {
       }
       // Test clicking all the different buttons on the node edit page of a
       // draft node.
-      foreach (array(t('Save'), t('Publish'), t('Preview'), t('Delete')) as $button_value) {
+      foreach (array(t('Save as draft'), t('Publish'), t('Delete')) as $button_value) {
         debug('Draft node edit. Button value: ' . $button_value);
         $edit = $this->getNodeArray();
-        $this->BackdropPost('node/add/article', $edit, t('Save as draft'));
+        $this->BackdropPost('node/add/post', $edit, t('Save as draft'));
         $node = $this->BackdropGetNodeByTitle($edit[$this->title_key]);
         // Remove the title, which is a required field.
         $edit[$this->title_key] = '';
