@@ -16,17 +16,6 @@ define('SAVE_DRAFT_DISABLED', 0);
 define('SAVE_DRAFT_ENABLED', 1);
 
 /**
- * Implements hook_config_info().
- */
-function save_draft_config_info() {
-  $prefixes['save_draft.settings'] = array(
-    'label' => t('Save draft settings'),
-    'group' => t('Configuration'),
-  );
-  return $prefixes;
-}
-
-/**
  * Implements hook_permission().
  */
 function save_draft_permission() {
