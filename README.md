@@ -1,4 +1,4 @@
-#Save Draft
+# Save Draft
 
 `Save Draft` replaces the default "Save" button on the content creation page and 
 removes the "Published" checkbox under "Publishing options". Instead it presents 
@@ -11,12 +11,12 @@ will save in unpublished form with a single click.
 You also have the option to allow drafts to be saved even if required fields
 are not filled in.
 
-##Installation
+## Installation
 
 - Install this module using the official 
   [Backdrop CMS instructions](https://backdropcms.org/guide/modules)
 
-##Usage
+## Usage
 
 After enabling the module:
 
@@ -28,7 +28,7 @@ After enabling the module:
   
   ![Save Draft - Content type settings](https://github.com/backdrop-contrib/save_draft/blob/1.x-1.x/images/save_draft-content_type_publishing_settings.png "Save Draft Content Type Publishing Settings")
 
-##Developers
+## Developers
 
 If your module adds a button to the node form module and you are using the
 "Skip required validation" option you can allow your button to also skip
@@ -37,23 +37,23 @@ button. For example, if you are adding a button 'my_button' to the form actions
 you would add this property also:
 $form['actions']['my_button']['#skip_required_validation'] = TRUE;
 
-##Issues
+## Issues
 
 Bugs and Feature requests should be reported in the 
 [Issue Queue](https://github.com/backdrop-contrib/save_draft/issues)
 
-##Current Maintainers
+## Current Maintainers
 
 - [Laryn Kragt Bakker](https://github.com/laryn) - [CEDC.org](https://cedc.org)
 
-##Credits
+## Credits
 
 - Ported to Backdrop CMS by [Laryn Kragt Bakker](https://github.com/laryn) - [CEDC.org](https://cedc.org).
 - Current and past maintainers for the Drupal module: Pravin Ajaaz, ArunSelva, 
   Yorirou, JulienD, valderama, ksenzee, danjukes. Support for the Drupal
   module is also provided by Young Globes.
 
-##License
+## License
 
 This project is GPL v2 software. See the [LICENSE.txt](https://github.com/backdrop-contrib/save_draft/blob/1.x-1.x/LICENSE.txt) 
 file in this directory for complete text.
