@@ -2,7 +2,8 @@
 
 /**
  * @file
- * Main file for the Save Draft module, which adds a 'Save as draft' button to content types.
+ * Main file for the Save Draft module, which adds a 'Save as draft' button
+ * to content types.
  */
 
 /**
@@ -115,7 +116,7 @@ function save_draft_draft_button_submit($form, &$form_state) {
 }
 
 /**
- * Handles save draft form validation
+ * Handles save draft form validation.
  */
 function save_draft_validate($form, &$form_state) {
   // Set the node to be published or unpublished depending on which button was
@@ -164,7 +165,8 @@ function save_draft_form_node_type_form_alter(&$form, &$form_state) {
 }
 
 /**
- * Returns TRUE if the currently logged in user has permission to choose the published state for the node being edited.
+ * Returns TRUE if the currently logged in user has permission to choose the
+ * published state for the node being edited.
  */
 function save_draft_access($form, &$form_state) {
   // Determine if the user has access to publish / unpublish this node via the
