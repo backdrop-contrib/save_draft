@@ -226,7 +226,7 @@ function save_draft_node_type_delete($info) {
  * @return array
  *   An associative array containing the structure of a form element.
  */
-function save_draft_form_after_build($element, &$form_state) {
+function save_draft_form_after_build(array $element, array &$form_state) {
   // Check that the form has been submitted.
   if ($form_state['process_input']) {
     // If the save draft button was pressed.
@@ -246,7 +246,7 @@ function save_draft_form_after_build($element, &$form_state) {
  * @param array $elements
  *   An associative array containing the structure of a form.
  */
-function _save_draft_remove_required(&$elements) {
+function _save_draft_remove_required(array &$elements) {
   // Recurse through all children.
   foreach (element_children($elements) as $key) {
     if (isset($elements[$key]) && $elements[$key]) {
