@@ -41,11 +41,13 @@ class SaveDraftTestCase extends DrupalWebTestCase {
 
     // Make sure save draft is enabled for articles.
     variable_set('save_draft_enabled_article', SAVE_DRAFT_ENABLED);
-
+    $unpublish = t('Unpublish');
+    $save_draft = t('Save as draft');
+    $save = t('Save');
     // Make sure the save draft button is present when adding a node and drafts
     // are enabled.
     $this->drupalGet('node/add/article');
-    $this->assertRaw('<input type="submit" id="edit-draft" name="op" value="' . t('Save as draft') . '" class="form-submit" />', t('Save draft enabled successfully on node create.'));
+    $this->assertRaw('<input type="submit" id="edit-draft" name="op" value="' . $save_draft . '" class="form-submit" />', t('Save draft enabled successfully on node create.'));
     // Publish a node, and make sure it's published.
     $edit = $this->getNodeArray();
     $this->drupalPost('node/add/article', $edit, t('Publish'));
@@ -55,7 +57,7 @@ class SaveDraftTestCase extends DrupalWebTestCase {
     // Make sure the unpublish button is present when on a published node and
     // drafts are enabled.
     $this->drupalGet('node/' . $node->nid . '/edit');
-    $this->assertRaw('<input type="submit" id="edit-draft" name="op" value="' . t('Unpublish') . '" class="form-submit" />', t('Save draft enabled successfully on published node edit.'));
+    $this->assertRaw('<input type="submit" id="edit-draft" name="op" value="' . $unpublish . '" class="form-submit" />', t('Save draft enabled successfully on published node edit.'));
     // Unpublish it, and make sure it's unpublished.
     $this->drupalPost('node/' . $node->nid . '/edit', array(), t('Unpublish'));
     $node = node_load($node->nid, NULL, TRUE);
@@ -70,7 +72,7 @@ class SaveDraftTestCase extends DrupalWebTestCase {
     // Make sure the unpublish button is present when on a draft node and
     // drafts are enabled.
     $this->drupalGet('node/' . $node->nid . '/edit');
-    $this->assertRaw('<input type="submit" id="edit-draft" name="op" value="' . t('Save') . '" class="form-submit" />', t('Save draft enabled successfully on draft node edit.'));
+    $this->assertRaw('<input type="submit" id="edit-draft" name="op" value="' . $save . '" class="form-submit" />', t('Save draft enabled successfully on draft node edit.'));
     // Publish the node, and make sure it's published.
     $this->drupalPost('node/' . $node->nid . '/edit', array(), t('Publish'));
     $node = node_load($node->nid, NULL, TRUE);
@@ -82,7 +84,7 @@ class SaveDraftTestCase extends DrupalWebTestCase {
     // Make sure the save draft button is not present when adding a node and
     // drafts are disabled.
     $this->drupalGet('node/add/article');
-    $this->assertNoRaw('<input type="submit" id="edit-draft" name="op" value="' . t('Save as draft') . '" class="form-submit" />', t('Save draft disabled successfully on node create.'));
+    $this->assertNoRaw('<input type="submit" id="edit-draft" name="op" value="' . $save_draft . '" class="form-submit" />', t('Save draft disabled successfully on node create.'));
     // Publish a node and edit it again.
     $edit = $this->getNodeArray();
     $this->drupalPost('node/add/article', $edit, t('Save'));
@@ -90,7 +92,7 @@ class SaveDraftTestCase extends DrupalWebTestCase {
     // Make sure the unpublish button is present when on a published node and
     // drafts are disabled.
     $this->drupalGet('node/' . $node->nid . '/edit');
-    $this->assertNoRaw('<input type="submit" id="edit-draft" name="op" value="' . t('Unpublish') . '" class="form-submit" />', t('Save draft disabled successfully on published node edit.'));
+    $this->assertNoRaw('<input type="submit" id="edit-draft" name="op" value="' . $unpublish . '" class="form-submit" />', t('Save draft disabled successfully on published node edit.'));
   }
 
   /**
