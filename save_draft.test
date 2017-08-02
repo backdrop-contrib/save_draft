@@ -122,8 +122,8 @@ class SaveDraftTestCase extends DrupalWebTestCase {
         // Required validation for the title should have passed, unless we are
         // clicking the Publish button, or skip_required_validation is FALSE, in
         // which case title should be required.
-        // t() functions are like this to replicate how the string would normally
-        // be created.
+        // t() functions are like this to replicate how the string would
+        // normally be created.
         if (!$skip_required_validation || $button_value == t('Publish')) {
           $this->assertRaw(t('!name field is required.', array('!name' => t('Title'))));
         }
@@ -148,8 +148,8 @@ class SaveDraftTestCase extends DrupalWebTestCase {
         // Required validation for the title should have passed, unless we are
         // clicking the Save button, or skip_required_validation is FALSE, in
         // which case title should be required.
-        // t() functions are like this to replicate how the string would normally
-        // be created.
+        // t() functions are like this to replicate how the string would
+        // normally be created.
         if (!$skip_required_validation || $button_value == t('Save')) {
           $this->assertRaw(t('!name field is required.', array('!name' => t('Title'))));
         }
@@ -174,8 +174,8 @@ class SaveDraftTestCase extends DrupalWebTestCase {
         // Required validation for the title should have passed, unless we are
         // clicking the Publish button, or skip_required_validation is FALSE, in
         // which case title should be required.
-        // t() functions are like this to replicate how the string would normally
-        // be created.
+        // t() functions are like this to replicate how the string would
+        // normally be created.
         if (!$skip_required_validation || $button_value == t('Publish')) {
           $this->assertRaw(t('!name field is required.', array('!name' => t('Title'))));
         }
@@ -185,4 +185,5 @@ class SaveDraftTestCase extends DrupalWebTestCase {
       }
     }
   }
+
 }
