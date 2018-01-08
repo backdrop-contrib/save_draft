@@ -3,7 +3,6 @@
 /**
  * @file
  * Main file for the Save Draft module, which adds a 'Save as draft' button
- *
  * to content types.
  */
 

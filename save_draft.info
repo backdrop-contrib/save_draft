@@ -1,4 +1,4 @@
 name = Save Draft
-description = Adds a 'Save as Draft' button to content types
+description = Adds a 'Save as Draft' button to content types.
 core = 7.x
 files[] = save_draft.test
