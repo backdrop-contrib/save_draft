@@ -49,6 +49,18 @@ function save_draft_form_node_form_alter(&$form, &$form_state) {
           'vertical-tabs' => backdrop_get_path('module', 'save_draft') . '/js/save_draft.js',
         ),
       );
+
+      // Hide Publishing Options fieldset if empty.
+      $hide = TRUE;
+      foreach (element_children($form['options']) as $field) {
+        if (isset($form['options'][$field]) && $form['options'][$field]['#access'] == TRUE) {
+          $hide = FALSE;
+          break;
+        }
+      }
+      if ($hide) {
+        $form['options']['#access'] = FALSE;
+      }
     }
 
     // Add a validation handler to set $form_state['values']['status'] based on
