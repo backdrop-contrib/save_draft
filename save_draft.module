@@ -42,25 +42,24 @@ function save_draft_form_node_form_alter(&$form, &$form_state) {
     // Remove the status checkbox from the options fieldset, and adjust the
     // fieldset accordingly.
     if (isset($form['options']['status'])) {
-      $form['options']['status']['#access'] = FALSE;
       $form['options']['#attributes']['class'] = array('node-promotion-options');
+      $form['options']['status']['#options'] = array(
+        2 => t('Schedule for later'),
+      );
+      $form['options']['status']['#description'] = 'Content set to "Schedule for later" will be saved as draft when the content is created, but will be automatically published on the date and time selected.';
+      $form['options']['status']['#type'] = 'checkboxes';
       $form['options']['#attached'] = array(
         'js' => array(
           'vertical-tabs' => backdrop_get_path('module', 'save_draft') . '/js/save_draft.js',
         ),
       );
-
-      // Hide Publishing Options fieldset if empty.
-      $hide = TRUE;
-      foreach (element_children($form['options']) as $field) {
-        if (isset($form['options'][$field]) && $form['options'][$field]['#access'] == TRUE) {
-          $hide = FALSE;
-          break;
-        }
-      }
-      if ($hide) {
-        $form['options']['#access'] = FALSE;
-      }
+     $form['options']['scheduled']['#states'] = array (
+        'visible' =>
+        array (
+          '.form-item-status-2 input' =>
+          array('checked' => TRUE)
+        ),
+      );
     }
 
     // Add a validation handler to set $form_state['values']['status'] based on
