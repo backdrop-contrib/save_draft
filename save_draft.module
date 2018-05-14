@@ -54,8 +54,10 @@ function save_draft_form_node_form_alter(&$form, &$form_state) {
         ),
       );
      $form['options']['scheduled']['#states'] = array (
-        'visible' => array (
-          '.form-item-status-2 input' => array('checked' => TRUE),
+        'visible' =>
+        array (
+          '.form-item-status-2 input' =>
+          array('checked' => TRUE)
         ),
       );
     }
