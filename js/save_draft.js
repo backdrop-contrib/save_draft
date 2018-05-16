@@ -42,9 +42,7 @@ Backdrop.behaviors.saveDraftFieldsetSummaries = {
 $(document).ready(function() {
     $('#edit-status-2').change(function() {
         if(this.checked) {
-          $('#edit-submit').val(Backdrop.t('Schedule for publication'));
-        } else {
-          $('#edit-submit').val(Backdrop.t('Publish'));
+          $('#edit-schedule').removeClass('button-secondary');
         }
     });
 });

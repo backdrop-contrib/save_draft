@@ -43,21 +43,41 @@ function save_draft_form_node_form_alter(&$form, &$form_state) {
     // fieldset accordingly.
     if (isset($form['options']['status'])) {
       $form['options']['#attributes']['class'] = array('node-promotion-options');
-      $form['options']['status']['#options'] = array(
-        2 => t('Schedule for later'),
-      );
-      $form['options']['status']['#description'] = 'Content set to "Schedule for later" will be saved as draft when the content is created, but will be automatically published on the date and time selected.';
-      $form['options']['status']['#type'] = 'checkboxes';
       $form['options']['#attached'] = array(
         'js' => array(
           'vertical-tabs' => backdrop_get_path('module', 'save_draft') . '/js/save_draft.js',
         ),
       );
-     $form['options']['scheduled']['#states'] = array (
-        'visible' => array (
-          '.form-item-status-2 input' => array('checked' => TRUE),
-        ),
-      );
+
+      // Hide Publishing Options fieldset if empty.
+      $hide = TRUE;
+      foreach (element_children($form['options']) as $field) {
+        if (isset($form['options'][$field]) && isset($form['options'][$field]['#access']) && $form['options'][$field]['#access'] == TRUE) {
+          $hide = FALSE;
+          break;
+        }
+      }
+      if ($hide) {
+        $form['options']['#access'] = FALSE;
+      }
+
+      // Only show scheduling info if not already published
+      $published = ($form['#node']->status && $form['#node']->nid);
+      if (!$published) {
+        $form['options']['status']['#options'] = array(
+          NODE_SCHEDULED => t('Schedule for later'),
+        );
+        $form['options']['status']['#description'] = 'Content set to "Schedule for later" will be saved as draft when the content is created, but will be automatically published on the date and time selected.';
+        $form['options']['status']['#type'] = 'checkboxes';
+        $form['options']['scheduled']['#states'] = array (
+          'visible' => array (
+            '.form-item-status-2 input' => array('checked' => TRUE),
+          ),
+        );
+      } else {
+        $form['options']['status']['#access'] = FALSE;
+        $form['options']['scheduled']['#access'] = FALSE;
+      }
     }
 
     // Add a validation handler to set $form_state['values']['status'] based on
@@ -72,20 +92,49 @@ function save_draft_form_node_form_alter(&$form, &$form_state) {
     // saving the node as unpublished.
     $form['actions']['draft'] = array(
       '#type' => 'submit',
-      '#class' => 'form-submit',
       '#submit' => array('save_draft_draft_button_submit'),
       // Between the default Save and Delete buttons.
       '#weight' => 9,
+      // Assume if scheduling is checked that they plan to schedule publication 
+      // (ie. we can remove the 'Save Draft' button if scheduling is selected)
+      '#states' => array (
+        'visible' => array (
+          '.form-item-status-2 input' => array('checked' => FALSE),
+        ),
+      ),
     );
+    $node_type = node_type_get_type($form['type']['#value']);
+    if ($node_type->settings['scheduling_enabled']) {
+      $form['actions']['schedule'] = array(
+        '#type' => 'submit',
+        '#attributes' => array('class' => array('button-primary')),
+        '#submit' => array('save_draft_schedule_button_submit'),
+        // Ahead of the Draft button when visible.
+        '#weight' => 8,
+        // Only visible when Scheduling is selected
+        '#states' => array (
+          'visible' => array (
+            '.form-item-status-2 input' => array('checked' => TRUE),
+          ),
+        ),
+      );
+      $form['actions']['submit']['#states'] = array (
+        'visible' => array (
+          '.form-item-status-2 input' => array('checked' => FALSE),
+        ),
+      );
+    }
 
     // Button labels when adding a new node.
     if (!isset($form_state['node']->nid)) {
       $form['actions']['submit']['#value'] = t('Publish');
+      $form['actions']['schedule']['#value'] = t('Schedule publication');
       $form['actions']['draft']['#value'] = t('Save as draft');
     }
     // Button labels when editing an existing draft.
     elseif (!$form_state['node']->status) {
       $form['actions']['submit']['#value'] = t('Publish');
+      $form['actions']['schedule']['#value'] = t('Schedule publication');
       $form['actions']['draft']['#value'] = t('Save as draft');
       // Move the draft button before the submit button, so that the
       // "Save" action is always first when editing existing content.
@@ -93,8 +142,10 @@ function save_draft_form_node_form_alter(&$form, &$form_state) {
     }
     // Button labels when editing an already published node.
     else {
-      $form['actions']['submit']['#value'] = t('Save');
+      $form['actions']['submit']['#value'] = t('Update');
       $form['actions']['draft']['#value'] = t('Unpublish');
+      // Don't allow scheduling on an already published node.
+      $form['actions']['schedule']['#access'] = FALSE;
     }
     $skip_required = config_get('node.type.' . $form['#node']->type, 'settings.skip_required');
     if ($skip_required) {
@@ -116,6 +167,17 @@ function save_draft_form_node_form_alter(&$form, &$form_state) {
  * Calls all submit handlers on the save button.
  */
 function save_draft_draft_button_submit($form, &$form_state) {
+  foreach ($form['actions']['submit']['#submit'] as $submit) {
+    $submit($form, $form_state);
+  }
+}
+
+/**
+ * Submit handler for the scheduling button.
+ *
+ * Calls all submit handlers on the save button.
+ */
+function save_draft_schedule_button_submit($form, &$form_state) {
   foreach ($form['actions']['submit']['#submit'] as $submit) {
     $submit($form, $form_state);
   }
@@ -156,6 +218,7 @@ function save_draft_form_node_type_form_alter(&$form, &$form_state) {
       ),
     ),
   );
+
   $form['workflow']['save_draft']['draft_enabled'] = array(
     '#default_value' => $enabled,
     '#parents' => array('draft_enabled'),
