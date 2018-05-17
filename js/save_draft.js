@@ -40,11 +40,7 @@ Backdrop.behaviors.saveDraftFieldsetSummaries = {
 };
 
 $(document).ready(function() {
-    $('#edit-status-2').change(function() {
-        if(this.checked) {
-          $('#edit-schedule').removeClass('button-secondary');
-        }
-    });
+  $('#edit-schedule').removeClass('button-secondary');
 });
 
 })(jQuery);

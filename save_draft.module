@@ -63,19 +63,25 @@ function save_draft_form_node_form_alter(&$form, &$form_state) {
 
       // Only show scheduling info if not already published
       $published = ($form['#node']->status && $form['#node']->nid);
+      // Don't show the default status options
+      $form['options']['status']['#type'] = 'hidden';
+      $form['options']['status']['#disabled'] = TRUE;
+      $status = ($form['#node']->scheduled && $form['#node']->status == 0) ? 2 : 0;
       if (!$published) {
-        $form['options']['status']['#options'] = array(
+        $form['options']['schedulestatus']['#options'] = array(
           NODE_SCHEDULED => t('Schedule for later'),
         );
-        $form['options']['status']['#description'] = 'Content set to "Schedule for later" will be saved as draft when the content is created, but will be automatically published on the date and time selected.';
-        $form['options']['status']['#type'] = 'checkboxes';
+        $form['options']['schedulestatus']['#description'] = 'Content set to "Schedule for later" will be saved as draft when the content is created, but will be automatically published on the date and time selected.';
+        $form['options']['schedulestatus']['#type'] = 'checkboxes';
+        $form['options']['schedulestatus']['#weight'] = 0;
+        $form['options']['schedulestatus']['#default_value'] = array($status);
+        //Show schedule dates if the box above is checked
         $form['options']['scheduled']['#states'] = array (
           'visible' => array (
-            '.form-item-status-2 input' => array('checked' => TRUE),
+            '.form-item-schedulestatus-2 input' => array('checked' => TRUE),
           ),
         );
       } else {
-        $form['options']['status']['#access'] = FALSE;
         $form['options']['scheduled']['#access'] = FALSE;
       }
     }
@@ -99,7 +105,7 @@ function save_draft_form_node_form_alter(&$form, &$form_state) {
       // (ie. we can remove the 'Save Draft' button if scheduling is selected)
       '#states' => array (
         'visible' => array (
-          '.form-item-status-2 input' => array('checked' => FALSE),
+          '.form-item-schedulestatus-2 input' => array('checked' => FALSE),
         ),
       ),
     );
@@ -114,13 +120,13 @@ function save_draft_form_node_form_alter(&$form, &$form_state) {
         // Only visible when Scheduling is selected
         '#states' => array (
           'visible' => array (
-            '.form-item-status-2 input' => array('checked' => TRUE),
+            '.form-item-schedulestatus-2 input' => array('checked' => TRUE),
           ),
         ),
       );
       $form['actions']['submit']['#states'] = array (
         'visible' => array (
-          '.form-item-status-2 input' => array('checked' => FALSE),
+          '.form-item-schedulestatus-2 input' => array('checked' => FALSE),
         ),
       );
     }
@@ -194,6 +200,9 @@ function save_draft_validate($form, &$form_state) {
   }
   elseif ($form_state['triggering_element']['#value'] == $form['actions']['submit']['#value']) {
     $form_state['values']['status'] = 1;
+  }
+  elseif ($form_state['triggering_element']['#value'] == $form['actions']['schedule']['#value']) {
+    $form_state['values']['status'] = 2;
   }
 }
 
