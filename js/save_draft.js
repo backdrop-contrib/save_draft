@@ -39,4 +39,8 @@ Backdrop.behaviors.saveDraftFieldsetSummaries = {
   }
 };
 
+$(document).ready(function() {
+  $('#edit-schedule').removeClass('button-secondary');
+});
+
 })(jQuery);

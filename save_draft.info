@@ -3,3 +3,5 @@ description = Adds a 'Save as Draft' button to content types
 backdrop = 1.x
 type = module
 package = User interface
+
+dependencies[] = system (>=1.10.0)
