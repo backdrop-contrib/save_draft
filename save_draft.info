@@ -1,5 +1,5 @@
 name = Save Draft
-description = Adds a 'Save as Draft' button to content types
+description = Adds a 'Save as Draft' button to content types.
 backdrop = 1.x
 type = module
 package = User interface

@@ -6,7 +6,7 @@ a "Publish" button and a "Save Draft" button for the same functionality with
 improved usability. "Publish" will save in published form and "Save as Draft" 
 will save in unpublished form with a single click.
 
-![Save Draft](https://github.com/backdrop-contrib/save_draft/blob/1.x-1.x/images/save_draft-screenshot.png "Save Draft example")
+![Save Draft](https://github.com/backdrop-contrib/save_draft/blob/1.x-1.x/images/save_draft.gif "Save Draft example")
 
 You also have the option to allow drafts to be saved even if required fields
 are not filled in.

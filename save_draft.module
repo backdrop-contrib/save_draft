@@ -2,7 +2,8 @@
 
 /**
  * @file
- * Main file for the Save Draft module, which adds a 'Save as draft' button to content types.
+ * Main file for the Save Draft module, which adds a 'Save as draft' button
+ * to content types.
  */
 
 /**
@@ -72,7 +73,7 @@ function save_draft_form_node_form_alter(&$form, &$form_state) {
         $form['options']['schedulestatus']['#options'] = array(
           NODE_SCHEDULED => t('Schedule for later'),
         );
-        $form['options']['schedulestatus']['#description'] = 'Content set to "Schedule for later" will be saved as draft when the content is created, but will be automatically published on the date and time selected.';
+        $form['options']['schedulestatus']['#description'] = 'Content will be saved as draft but will be automatically published on the date and time selected.';
         $form['options']['schedulestatus']['#type'] = 'checkboxes';
         $form['options']['schedulestatus']['#weight'] = 0;
         $form['options']['schedulestatus']['#default_value'] = array($status);
@@ -191,7 +192,7 @@ function save_draft_schedule_button_submit($form, &$form_state) {
 }
 
 /**
- * Handles save draft form validation
+ * Handles save draft form validation.
  */
 function save_draft_validate($form, &$form_state) {
   // Set the node to be published or unpublished depending on which button was
@@ -211,8 +212,9 @@ function save_draft_validate($form, &$form_state) {
  * Implements hook_form_FORM_ID_alter() for the node type form.
  */
 function save_draft_form_node_type_form_alter(&$form, &$form_state) {
-  $enabled = config_get('node.type.' . $form['#node_type']->type, 'settings.draft_enabled');
-  $skip_required = config_get('node.type.' . $form['#node_type']->type, 'settings.skip_required');
+  $config = config('node.type.' . $form['#node_type']->type . '.settings');
+  $enabled = $config->get('settings.draft_enabled');
+  $skip_required = $config->get('settings.skip_required');
   $options = array(
     'draft_enabled' => t('Enable "Save Draft" button on this content type'),
     'skip_required' => t('Allow drafts to skip required fields'),
@@ -247,12 +249,16 @@ function save_draft_form_node_type_form_alter(&$form, &$form_state) {
    * Submit handler for the new "Save Draft" options on the Content Type edit form.
    */
 function save_draft_form_node_type_form_submit($form, &$form_state) {
-  config_set('node.type.' . $form['#node_type']->type, 'settings.draft_enabled', $form_state['values']['draft_enabled']);
-  config_set('node.type.' . $form['#node_type']->type, 'settings.skip_required', $form_state['values']['skip_required']);
+  $config = config('node.type.' . $form['#node_type']->type . '.settings');
+  $config->set('settings.draft_enabled', $form_state['values']['draft_enabled']);
+  $config->set('settings.skip_required', $form_state['values']['skip_required']);
+  $config->save();
 }
 
 /**
- * Returns TRUE if the currently logged in user has permission to choose the published state for the node being edited.
+ * Returns TRUE if the currently logged in user has permission to choose the
+ *
+ * published state for the node being edited.
  */
 function save_draft_access($form, &$form_state) {
   // Determine if the user has access to publish / unpublish this node via the
@@ -307,7 +313,7 @@ function save_draft_access($form, &$form_state) {
  * @return array
  *   An associative array containing the structure of a form element.
  */
-function save_draft_form_after_build($element, &$form_state) {
+function save_draft_form_after_build(array $element, array &$form_state) {
   // Check that the form has been submitted.
   if ($form_state['process_input']) {
     // If the save draft button was pressed.
@@ -327,7 +333,7 @@ function save_draft_form_after_build($element, &$form_state) {
  * @param array $elements
  *   An associative array containing the structure of a form.
  */
-function _save_draft_remove_required(&$elements) {
+function _save_draft_remove_required(array &$elements) {
   // Recurse through all children.
   foreach (element_children($elements) as $key) {
     if (isset($elements[$key]) && $elements[$key]) {
