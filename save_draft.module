@@ -212,7 +212,7 @@ function save_draft_validate($form, &$form_state) {
  * Implements hook_form_FORM_ID_alter() for the node type form.
  */
 function save_draft_form_node_type_form_alter(&$form, &$form_state) {
-  $config = config('node.type.' . $form['#node_type']->type . '.settings');
+  $config = config('node.type.' . $form['#node_type']->type);
   $enabled = $config->get('settings.draft_enabled');
   $skip_required = $config->get('settings.skip_required');
   $options = array(
