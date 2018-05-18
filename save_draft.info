@@ -4,4 +4,4 @@ backdrop = 1.x
 type = module
 package = User interface
 
-dependencies[] = system (>=1.10.0)
+dependencies[] = system (>1.9.99)

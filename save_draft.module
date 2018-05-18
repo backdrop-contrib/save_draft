@@ -249,7 +249,7 @@ function save_draft_form_node_type_form_alter(&$form, &$form_state) {
    * Submit handler for the new "Save Draft" options on the Content Type edit form.
    */
 function save_draft_form_node_type_form_submit($form, &$form_state) {
-  $config = config('node.type.' . $form['#node_type']->type . '.settings');
+  $config = config('node.type.' . $form['#node_type']->type);
   $config->set('settings.draft_enabled', $form_state['values']['draft_enabled']);
   $config->set('settings.skip_required', $form_state['values']['skip_required']);
   $config->save();
