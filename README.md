@@ -1,15 +1,22 @@
 # Save Draft
 
-`Save Draft` replaces the default "Save" button on the content creation page and 
-removes the "Published" checkbox under "Publishing options". Instead it presents 
-a "Publish" button and a "Save Draft" button for the same functionality with 
-improved usability. "Publish" will save in published form and "Save as Draft" 
-will save in unpublished form with a single click.
+`Save Draft` improves the usability of the content create/add page by removing
+the "Published" checkbox under "Publishing options" tab, and replacing the
+default "Save" button with a set of "Publish"/"Save Draft" buttons instead.
+"Publish" will save the content in published status, and "Save as Draft" will
+save it in unpublished status. The functionality remains the same, while
+requiring a single click instead of multiple ones.
 
-![Save Draft](https://github.com/backdrop-contrib/save_draft/blob/1.x-1.x/images/save_draft.gif "Save Draft example")
+`Save Draft` supports the new feature that was introduced in Backdrop core after
+version 1.10, which allows scheduled publishing of content. When a piece of
+content is scheduled to be published, the "Publish" button changes to "Schedule
+publication" button instead:
 
-You also have the option to allow drafts to be saved even if required fields
-are not filled in.
+![Save Draft](images/save_draft.gif "Save Draft example")
+
+`Save Draft` also provides a per content type setting to allow drafts to be
+saved even if any required fields are not filled in (you will still need to fill
+these fields in order to publish the content).
 
 ## Installation
 
@@ -20,22 +27,23 @@ are not filled in.
 
 After enabling the module:
 
-- By default once you have enabled the module, the "Save Draft" button will
-  be activated on all content types and the "Skip Required Fields" functionality
-  will not be turned on.
-- To adjust the default settings, simply edit a content type and look under
-  "Publishing options" for the "Save Draft" settings:
+- Once you have enabled the module, the "Save Draft" button will be activated by
+  default on all content types, while the "Skip Required Fields" functionality
+  will be disabled by default.
+- To adjust the default settings, simply edit a content type, and look under the
+  "Publishing settings" tab for the "Save Draft" settings:
   
-  ![Save Draft - Content type settings](https://github.com/backdrop-contrib/save_draft/blob/1.x-1.x/images/save_draft-content_type_publishing_settings.png "Save Draft Content Type Publishing Settings")
+  ![Save Draft - Content type settings](images/save_draft-content_type_publishing_settings.png "Save Draft content type Publishing settings")
 
 ## Developers
 
-If your module adds a button to the node form module and you are using the
-"Skip required validation" option you can allow your button to also skip
-required validation by adding the #skip_required_validation property to your
-button. For example, if you are adding a button 'my_button' to the form actions
-you would add this property also:
-$form['actions']['my_button']['#skip_required_validation'] = TRUE;
+If your module adds a button to the node form module and you are using the "Skip
+required validation" option, you can allow your button to also skip required
+validation by adding the `#skip_required_validation property` to your button.
+For example, if you are adding a `'my_button'` button to the form actions, you
+could add this property also:
+
+`$form['actions']['my_button']['#skip_required_validation'] = TRUE;`
 
 ## Issues
 
@@ -48,10 +56,18 @@ Bugs and Feature requests should be reported in the
 
 ## Credits
 
-- Ported to Backdrop CMS by [Laryn Kragt Bakker](https://github.com/laryn) - [CEDC.org](https://cedc.org).
-- Current and past maintainers for the Drupal module: Pravin Ajaaz, ArunSelva, 
-  Yorirou, JulienD, valderama, ksenzee, danjukes. Support for the Drupal
-  module is also provided by Young Globes.
+- Ported to Backdrop CMS by [Laryn Kragt Bakker](https://github.com/laryn) - 
+  [CEDC.org](https://cedc.org).
+- Current and past maintainers for the Drupal module:
+  - [Pravin Ajaaz](https://www.drupal.org/u/pravin-ajaaz)
+  - [ArunSelva](https://www.drupal.org/u/arunselva)
+  - [Yorirou](https://www.drupal.org/u/yorirou)
+  - [JulienD](https://www.drupal.org/u/juliend)
+  - [valderama](https://www.drupal.org/u/valderama)
+  - [ksenzee](https://www.drupal.org/u/ksenzee)
+  - [Dan Jukes](https://www.drupal.org/u/danjukes)
+- Support for the Drupal module is also provided by
+  [Young Globes](https://www.drupal.org/young-globes)
 
 ## License
 
