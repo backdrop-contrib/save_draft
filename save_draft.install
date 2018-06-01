@@ -13,12 +13,9 @@
 function save_draft_install() {
   foreach (node_type_get_types() as $type) {
     $config = config('node.type.' . $type->type);
-    $config->set('draft_enabled', update_variable_get('save_draft_enabled_' . $type, 1));
-    $config->set('skip_required', update_variable_get('save_draft_skip_required_' . $type, 0));
+    $config->set('settings.draft_enabled', 1);
+    $config->set('settings.skip_required', 0);
     $config->save();
-    update_variable_del('save_draft_enabled_' . $type);
-    update_variable_del('save_draft_skip_required_' . $type);
-    update_variable_del('save_draft_show_message_' . $type);
   }
 }
 
@@ -49,5 +46,20 @@ function save_draft_update_1000() {
       $config->delete('save_draft.settings');
     }
     $config->save();
+  }
+}
+
+/**
+ * Upgrade path from Drupal 7 variables.
+ */
+function save_draft_update_1001() {
+  foreach (node_type_get_types() as $type) {
+    $config = config('node.type.' . $type->type);
+    $config->set('settings.draft_enabled', update_variable_get('save_draft_enabled_' . $type, 1));
+    $config->set('settings.skip_required', update_variable_get('save_draft_skip_required_' . $type, 0));
+    $config->save();
+    update_variable_del('save_draft_enabled_' . $type);
+    update_variable_del('save_draft_skip_required_' . $type);
+    update_variable_del('save_draft_show_message_' . $type);
   }
 }
